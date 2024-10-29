@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
 import React from 'react';
+import dayjs from 'dayjs';
 import { Feather } from '@expo/vector-icons';
 
 export default function EventListItem({ eventData }) {
@@ -11,7 +12,7 @@ export default function EventListItem({ eventData }) {
           <Text className="text-lg font-semibold uppercase text-amber-600">
             {/* Wed , 11 sept • 8: 30 PM */}
 
-            {datetime}
+            {dayjs(datetime).format('ddd, MMM D,  h:mm A')}
           </Text>
           <Text className="text-xl font-bold " numberOfLines={3}>
             {title}
