@@ -1,9 +1,21 @@
-import { Link, Tabs } from 'expo-router';
+import { Link, Redirect, Tabs } from 'expo-router';
 
 import { HeaderButton } from '../../components/HeaderButton';
 import { TabBarIcon } from '../../components/TabBarIcon';
 
+import { useAuth } from '~/contexts/AuthProvider';
+
 export default function TabLayout() {
+  const { isAuthenticated, session } = useAuth();
+
+  console.warn(isAuthenticated);
+  console.log(isAuthenticated);
+  console.log('sess', session);
+
+  if (!isAuthenticated) {
+    return <Redirect href="/login" />;
+  }
+
   return (
     <Tabs
       screenOptions={{

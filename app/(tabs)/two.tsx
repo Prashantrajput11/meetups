@@ -1,7 +1,9 @@
 import { Stack } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
+import CButton from '~/components/CButton';
 
 import { ScreenContent } from '~/components/ScreenContent';
+import { supabase } from '~/utils/supabase';
 
 export default function Home() {
   return (
@@ -10,6 +12,8 @@ export default function Home() {
       <View style={styles.container}>
         <ScreenContent path="app/(tabs)/two.tsx" title="Tab Two" />
       </View>
+
+      <CButton title={'sign out'} handlePress={() => supabase.auth.signOut()} />
     </>
   );
 }

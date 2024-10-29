@@ -3,12 +3,14 @@ import React from 'react';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import events from '~/assets/events.json';
 import dayjs from 'dayjs';
+import CButton from '~/components/CButton';
 
 const EventPage = () => {
   const { id } = useLocalSearchParams();
 
   const event = events.find((event) => event.id === id);
 
+  if (!event) return;
   return (
     <View className="flex-1 bg-white p-3">
       {/* <Text>EventPage : {id}</Text> */}
@@ -33,6 +35,16 @@ const EventPage = () => {
       <Text className="font-regular text-lg " numberOfLines={3}>
         {event.description}
       </Text>
+
+      <View className="absolute bottom-0 left-0 right-0 flex-row  items-center justify-between border-t-2 border-gray-200  p-6">
+        <Text className="text-xl font-medium">Free</Text>
+
+        <CButton
+          title={'Join and RSVP'}
+          containerStyles={'bg-rose-400 p-4 rounded-md'}
+          textStyles={'text-lg text-white font-bold'}
+        />
+      </View>
     </View>
   );
 };
