@@ -5,10 +5,22 @@ import { ScreenContent } from '~/components/ScreenContent';
 import EventList from '~/components/EventListItem';
 import EventListItem from '~/components/EventListItem';
 import events from '~/assets/events.json';
+import { useEffect, useState } from 'react';
+import { supabase } from '~/utils/supabase';
 
 // const event = events[3];
 
 export default function Events() {
+  const [events, setEvents] = useState([]);
+  const fetchEvents = async () => {
+    let { data, error } = await supabase.from('events').select('*');
+
+    setEvents(data);
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
   return (
     <>
       <Stack.Screen options={{ title: 'Events' }} />

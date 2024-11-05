@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 
 export default function EventListItem({ eventData }) {
-  const { title, location, datetime, image, id } = eventData;
+  const { title, location, datetime, image_uri, id } = eventData;
   return (
     <Link href={`${id}`} asChild>
       <Pressable className="gap-3  border-b-2 border-gray-200 p-3 ">
@@ -25,7 +25,7 @@ export default function EventListItem({ eventData }) {
           {/* redner event image  */}
 
           <Image
-            source={{ uri: image }}
+            source={{ uri: image_uri }}
             // style={{ width: 100, height: 100 }}
             className="aspect-video w-2/5 rounded-lg"
           />

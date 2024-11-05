@@ -1,14 +1,32 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import events from '~/assets/events.json';
 import dayjs from 'dayjs';
 import CButton from '~/components/CButton';
+import { supabase } from '~/utils/supabase';
 
 const EventPage = () => {
   const { id } = useLocalSearchParams();
 
-  const event = events.find((event) => event.id === id);
+  const [event, setEvent] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchEventById();
+  }, [id]);
+
+  const fetchEventById = async () => {
+    setLoading(true);
+    const { data, error } = await supabase.from('events').select('*').eq('id', id).single();
+
+    setEvent(data);
+    setLoading(false);
+  };
+
+  if (loading) {
+    return <ActivityIndicator size={'large'} />;
+  }
 
   if (!event) return;
   return (
@@ -18,7 +36,7 @@ const EventPage = () => {
       <Stack.Screen options={{ title: 'Event', headerBackTitleVisible: false }} />
 
       <Image
-        source={{ uri: event.image }}
+        source={{ uri: event.image_uri }}
         // style={{ width: 100, height: 100 }}
         className="aspect-video w-full rounded-lg"
       />
