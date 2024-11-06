@@ -1,11 +1,30 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { Feather } from '@expo/vector-icons';
 import { Link } from 'expo-router';
+import { supabase } from '~/utils/supabase';
 
 export default function EventListItem({ eventData }) {
+  const [peopleCount, setPeopleCount] = useState(0);
   const { title, location, datetime, image_uri, id } = eventData;
+
+  useEffect(() => {
+    fetchPeople();
+  }, [id]);
+
+  const fetchPeople = async () => {
+    const { count, error } = await supabase
+      .from('attendance')
+      .select('*', { count: 'exact', head: true })
+      .eq('event_id', id);
+
+    setPeopleCount(count);
+
+    console.log('count', count);
+    // console.log('error', error);
+  };
+
   return (
     <Link href={`${id}`} asChild>
       <Pressable className="gap-3  border-b-2 border-gray-200 p-3 ">
@@ -34,7 +53,7 @@ export default function EventListItem({ eventData }) {
         {/* footer   */}
 
         <View className="flex-row gap-3">
-          <Text className="mr-auto">16 going</Text>
+          <Text className="mr-auto">{peopleCount} going</Text>
 
           <Feather name="share" size={24} color="gray" />
           <Feather name="bookmark" size={24} color="gray" />
