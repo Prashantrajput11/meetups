@@ -26,7 +26,7 @@ export default function EventListItem({ eventData }) {
   };
 
   return (
-    <Link href={`${id}`} asChild>
+    <Link href={`/event/${id}`} asChild>
       <Pressable className="gap-3  border-b-2 border-gray-200 p-3 ">
         <View className="flex-row ">
           <View className="flex-1 gap-2">
