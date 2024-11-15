@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   Image,
+  Text,
   Pressable,
   ActivityIndicator,
 } from 'react-native';
@@ -98,9 +99,66 @@ export default function Profile() {
     }
   }
 
+  const uploadAvatar = async () => {
+    try {
+      if (!avatarUrl?.startsWith('file://')) {
+        console.log("Avatar URL doesn't start with 'file://'");
+        return;
+      }
+
+      console.log('Avatar URL:', avatarUrl);
+
+      // Convert file to base64
+      const base64 = await FileSystem.readAsStringAsync(avatarUrl, {
+        encoding: 'base64',
+      });
+      console.log('Base64 encoding successful');
+
+      // Generate file path and specify content type
+      // const filePath = `${Crypto.randomUUID()}.png`;
+      const filePath = `${session?.user.id}.png`;
+      const contentType = 'image/jpg';
+      console.log('File path generated:', filePath);
+
+      // Upload the image to Supabase storage
+      const { data, error } = await supabase.storage
+        .from('avatars')
+        .upload(`${filePath}`, decode(base64), { contentType, upsert: true });
+
+      if (error) {
+        console.error('Error during upload:', error);
+        throw new Error(`Failed to upload avatar: ${error.message}`);
+      }
+
+      console.log('Upload successful:', data);
+      if (data) {
+        return data.path;
+      }
+    } catch (error) {
+      console.error('Error in uploadAvatar function:', error);
+      Alert.alert('Upload Failed', 'There was an error uploading your avatar.');
+    }
+  };
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setAvatarUrl(result.assets[0].uri);
+    }
+  };
+
   return (
     <>
       <Stack.Screen options={{ title: 'Profile' }} />
+
+      <Text>test profile not inn use</Text>
       <View>
         <Avatar
           size={200}
