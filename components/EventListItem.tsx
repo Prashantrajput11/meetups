@@ -7,7 +7,7 @@ import { supabase } from '~/utils/supabase';
 
 export default function EventListItem({ eventData }) {
   const [peopleCount, setPeopleCount] = useState(0);
-  const { title, location, datetime, image_uri, id } = eventData;
+  const { title, location, datetime, image_uri, id, dist_meters } = eventData;
 
   useEffect(() => {
     fetchPeople();
@@ -37,6 +37,9 @@ export default function EventListItem({ eventData }) {
             </Text>
             <Text className="text-xl font-bold " numberOfLines={3}>
               {title}
+            </Text>
+            <Text className="text-sm font-light  " numberOfLines={3}>
+              {Math.floor(dist_meters / 1000)} kms
             </Text>
             <Text className="text-lg text-gray-500">{location} </Text>
           </View>

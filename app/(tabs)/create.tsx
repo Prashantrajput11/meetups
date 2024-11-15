@@ -37,7 +37,7 @@ const Create = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('events')
-        .insert([{ title, description, user_id: user.id, location_point: 'POINT(28.3  77.0)' }])
+        .insert([{ title, description, user_id: user.id, location_point: 'POINT(28.37  77.05)' }])
         .select()
         .single();
 

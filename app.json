@@ -37,6 +37,14 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.prashantexpo11.meetups"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0f064280-066f-405d-ab8f-5e7dfdb9c870"
+      }
     }
   }
 }
