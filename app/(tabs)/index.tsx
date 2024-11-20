@@ -1,24 +1,56 @@
 import { Stack } from 'expo-router';
-import { StyleSheet, View, FlatList, Text, TextInput } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  Text,
+  TextInput,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { supabase } from '~/utils/supabase';
 import EventListItem from '~/components/EventListItem';
 import { useAuth } from '~/contexts/AuthProvider';
 import { StatusBar } from 'expo-status-bar';
+import * as Location from 'expo-location';
 
 export default function EventsScreen() {
   const { user, session } = useAuth();
   const [events, setEvents] = useState([]);
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  console.log('user', user);
+  useEffect(() => {
+    async function getCurrentLocation() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    }
+
+    getCurrentLocation();
+  }, []);
 
   const fetchNearbyEvents = async () => {
+    if (!location) {
+      return;
+    }
+
+    setIsLoading(true);
     try {
       let { data, error } = await supabase.rpc('nearby_events', {
-        lat: 77.15,
-        long: 28.37,
+        lat: location?.coords.latitude,
+        long: location.coords.longitude,
       });
+
+      setIsLoading(false);
       if (error) console.error(error);
       else {
         setEvents(data);
@@ -29,9 +61,18 @@ export default function EventsScreen() {
   };
 
   useEffect(() => {
-    fetchNearbyEvents();
-  }, []);
+    if (location) {
+      fetchNearbyEvents();
+    }
+  }, [location]);
 
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator color="black" size={'large'} />
+      </View>
+    );
+  }
   return (
     <>
       <StatusBar style="light" />
